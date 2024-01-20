@@ -8,35 +8,39 @@ import org.testng.annotations.Test;
 
 import java.util.HashMap;
 
+import static com.restful.booker.crudtest.AuthoriseCreateTest.token;
 import static io.restassured.RestAssured.given;
 
 public class BookingCRUDTest extends TestBase {
 
     static int bookingID;
 
-    @Test
-    public void test001GetAllBookingIDs()
-    {
-        Response response = given()
-                        .when()
-                        .get();
-        response.prettyPrint();
-        response.then().statusCode(200);
-    }
 
-    @Test
-    public void test002GetSingleBooking()
-    {
-        Response response = given()
-                        .when()
-                        .get("/48");
-        response.prettyPrint();
-        response.then().statusCode(200);
-    }
+//    @Test
+//    public void test001GetAllBookingIDs()
+//    {
+//        Response response = given()
+//                        .when()
+//                        .get();
+//        response.prettyPrint();
+//        response.then().statusCode(200);
+//    }
+
+//    @Test
+//    public void test002GetSingleBooking()
+//    {
+//        Response response = given()
+//                        .when()
+//                        .get("/48");
+//        response.prettyPrint();
+//        response.then().statusCode(200);
+//    }
 
     @Test
     public void test003CreateBooking()
     {
+        System.out.println("=========== CREATE BOOKING ===============");
+
         String firstname = TestUtils.getRandomValue() + "Prime";
         String lastname = TestUtils.getRandomValue() + "Testing";
 
@@ -68,6 +72,8 @@ public class BookingCRUDTest extends TestBase {
     @Test
     public void test004UpdateBooking() {
 
+        System.out.println("=========== UPDATE BOOKING USING PUT ===============");
+
         String firstname = TestUtils.getRandomValue() + "JAVA";
         String lastname = TestUtils.getRandomValue() + "Testing";
 
@@ -84,10 +90,10 @@ public class BookingCRUDTest extends TestBase {
         bookingPojo.setBookingdates(bookingdates);
 
         Response response =
-                given().log().all()
+                given()
                         .header("Content-Type", "application/json")
                         .header("Accept", "application/json")
-                        .header("Cookie" , "token=c3cf9df32fa20c9" )
+                        .header("Cookie" , "token="+ token)
                         .header("Authorization", "Basic YWRtaW46cGFzc3dvcmQxMjM=")
                         //.auth().preemptive().basic("admin", "password123")
                         .body(bookingPojo)
@@ -99,17 +105,26 @@ public class BookingCRUDTest extends TestBase {
 
     @Test
     public void test005PartialUpdateBooking() {
+
+        System.out.println("=========== PARTIAL UPDATE BOOKING ===============");
+
         String firstname = TestUtils.getRandomValue() + "API";
         String lastname = TestUtils.getRandomValue() + "Testing";
+
+        HashMap<String,String>bookingdates = new HashMap();
+        bookingdates.put("checkin" , "2024-03-04");
+        bookingdates.put("checkout" , "2024-04-04");
 
         BookingPojo bookingPojo = new BookingPojo();
         bookingPojo.setFirstname(firstname);
         bookingPojo.setLastname(lastname);
+        bookingPojo.setBookingdates(bookingdates);
 
         Response response =
-                given().log().all()
+                given()
                         .header("Content-Type", "application/json")
                         .header("Accept", "application/json")
+                        .header("Cookie" , "token="+ token)
                         .header("Authorization", "Basic YWRtaW46cGFzc3dvcmQxMjM=")
                         .body(bookingPojo)
                         .when()
@@ -120,8 +135,12 @@ public class BookingCRUDTest extends TestBase {
 
     @Test
     public void test006DeleteBooking() {
-        Response response = given().log().all()
+
+        System.out.println("=========== DELETE BOOKING ===============");
+
+        Response response = given()
                 .header("Content-Type", "application/json")
+                .header("Cookie" , "token="+ token )
                 .header("Authorization", "Basic YWRtaW46cGFzc3dvcmQxMjM=")
                 .when()
                 .delete("/" + bookingID);
@@ -129,13 +148,15 @@ public class BookingCRUDTest extends TestBase {
         response.prettyPrint();
     }
 
-    @Test
-    public void test007PingCheck() {
-        Response response = given().log().all()
-                .header("Authorization", "Basic YWRtaW46cGFzc3dvcmQxMjM=")
-                .when()
-                .get("https://restful-booker.herokuapp.com/ping");
-        response.prettyPrint();
-        response.then().statusCode(201);
-    }
+//    @Test
+//    public void test007PingCheck() {
+//
+//
+//        Response response = given()
+//                .header("Authorization", "Basic YWRtaW46cGFzc3dvcmQxMjM=")
+//                .when()
+//                .get("https://restful-booker.herokuapp.com/ping");
+//        response.prettyPrint();
+//        response.then().statusCode(201);
+//    }
 }

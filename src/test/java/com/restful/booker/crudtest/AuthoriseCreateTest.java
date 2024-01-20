@@ -10,6 +10,8 @@ import static io.restassured.RestAssured.given;
 
 public class AuthoriseCreateTest {
 
+    static String token;
+
     @BeforeClass
     public static void inIt()
     {
@@ -32,5 +34,8 @@ public class AuthoriseCreateTest {
                 .post();
         response.prettyPrint();
         response.then().statusCode(200);
+
+        token =response.then().extract().path("token");
+        System.out.println("Token = " + token);
     }
 }
